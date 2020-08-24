@@ -20,7 +20,7 @@ You can rename maya non-DAG Objects, like shading nodes, etc, from outliner.
 The numbering feature works reading the selection order, if you want identical results on numbering, just select items in the same order. (Ej. select Top item, shift click bottom)
 
 
-[<img https://github.com/MaxRocamora/MayaWorkflow/blob/master/workflow/img/renamer.png?raw=true>]
+![renamer screenshot](https://github.com/MaxRocamora/MayaWorkflow/blob/master/workflow/img/renamer.png?raw=true>)
 
 Create a shelf button with this python command:
 
