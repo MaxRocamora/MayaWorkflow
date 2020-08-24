@@ -1,4 +1,4 @@
-## Maya Workflow Tools
+<center><h2>Maya Workflow Tools</h2></center>
 
 A small set of workflow tools for maya
 
@@ -19,8 +19,7 @@ There are some limitations from the maya naming system, you cannot have a number
 You can rename maya non-DAG Objects, like shading nodes, etc, from outliner.
 The numbering feature works reading the selection order, if you want identical results on numbering, just select items in the same order. (Ej. select Top item, shift click bottom)
 
-
-![renamer screenshot](https://github.com/MaxRocamora/MayaWorkflow/blob/master/workflow/img/renamer.png?raw=true>)
+<center>![renamer screenshot](https://github.com/MaxRocamora/MayaWorkflow/blob/master/workflow/img/renamer.png?raw=true>)</center>
 
 Create a shelf button with this python command:
 
