@@ -33,5 +33,11 @@ wf_renamer.load()
 ### REFERENCE MINIPANEL
 Manage reference nodes from scene selection.
 
+Provides options for reload, load, unload, select, duplicate, remove any references from maya by selecting one or more elements of the reference on viewport.
+
+Also has mass replacement from multiples selected references at once, and set their reference namespace from the reference file name.
+
+<center>![renamer screenshot](https://github.com/MaxRocamora/MayaWorkflow/blob/master/workflow/img/refpanel.png?raw=true>)</center>
+
 #### SAVE INCREMENTAL
 A simple script to save incremental your current file even if it is not modified.
