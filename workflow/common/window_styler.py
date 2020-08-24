@@ -24,7 +24,7 @@ class WindowsStyler():
 
     @property
     def qss_file(self):
-        qss = os.path.join(os.path.dirname(__file__), 'arcane2.qss')
+        qss = os.path.join(os.path.dirname(__file__), 'workflow.qss')
         return qss
 
     def _load_css(self, qtwindow, path, title):
