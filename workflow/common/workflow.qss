@@ -1,0 +1,143 @@
+/* **************************************************** */
+/* QWIDGET
+/* **************************************************** */
+
+QWidget {
+    font-family : Segoe UI;
+    font-style : normal;
+}
+
+/* **************************************************** */
+/* QPUSHBUTTON
+/* **************************************************** */
+
+QPushButton {
+    color: rgb(230, 230, 230);
+    background-color: rgb(46, 134, 193);
+    border-radius: 2;
+    font: bold;
+    font-size: 12px;
+}
+
+QPushButton:pressed {
+    background-color: rgb(60, 60, 60);
+}
+
+QPushButton:hover {
+    color: rgb(230, 230, 230);
+    background-color: rgb(46, 134, 193);
+    border: 1px solid rgb(235, 245, 251);
+}
+
+
+/* **************************************************** */
+/* QWIDGET (tree&list)*/
+/* **************************************************** */
+
+.QWidget:item:hover
+{
+    background-color: red;
+}
+
+.QWidget:item:selected
+{
+    background-color: orange;
+    color: black;
+}
+
+/* **************************************************** */
+/* QFRAME */
+/* **************************************************** */
+/*
+QFrame
+{
+    color: rgb(60,60,60);
+}
+*/
+/* **************************************************** */
+/* QLABEL */
+/* **************************************************** */
+/*
+QLabel
+{
+    color: rgb(60,60,60);
+}
+
+*/
+/* **************************************************** */
+/* QLINEEDIT */
+/* **************************************************** */
+
+/*
+QLineEdit
+{
+    color: red;
+    background-color: rgb(30,30,30);
+}
+*/
+
+/* **************************************************** */
+/* QCHECKBOX */
+/* **************************************************** */
+
+QCheckBox {
+    color: rgb(230, 230, 230);
+}
+
+QCheckBox:indicator:checked
+{
+    background-color: rgb(52, 152, 219);
+    border: 1px solid rgb(50, 50, 50);
+}
+
+QCheckBox:indicator:disabled
+{
+    color: rgb(100,100,100);
+    background-color: rgb(100, 100, 100);
+    border: 1px solid rgb(100, 100, 100);
+    width: 10px;
+    height: 10px;
+}
+
+QCheckBox:indicator
+{
+    background-color: rgb(50,50,50);
+    border: 1px solid rgb(120,120,120);
+    width: 10px;
+    height: 10px;
+}
+
+QCheckBox:indicator:hover
+{
+    border: 1px solid white;
+    color: black;
+}
+
+/* **************************************************** */
+/* RADIO BUTTON                                         */
+/* **************************************************** */
+
+QRadioButton {
+color: rgb(230, 230, 230);
+}
+
+/* **************************************************** */
+/* MENU BAR */
+/* **************************************************** */
+
+QMenuBar
+{
+    background: rgb(50,50,50);
+    color: rgb(250,250,250);
+}
+
+QMenuBar:item
+{
+    background: rgb(50,50,50);
+    color: rgb(250,250,250);
+}
+
+QMenu:separator {
+    height: 1px;
+    background: rgb(60,60,60);
+}
