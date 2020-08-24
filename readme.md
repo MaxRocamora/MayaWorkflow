@@ -19,15 +19,12 @@ There are some limitations from the maya naming system, you cannot have a number
 You can rename maya non-DAG Objects, like shading nodes, etc, from outliner.
 The numbering feature works reading the selection order, if you want identical results on numbering, just select items in the same order. (Ej. select Top item, shift click bottom)
 
-<center>![renamer screenshot](https://github.com/MaxRocamora/MayaWorkflow/blob/master/workflow/img/renamer.png?raw=true>)</center>
+![renamer screenshot](https://github.com/MaxRocamora/MayaWorkflow/blob/master/workflow/img/renamer.png?raw=true>)
 
-Create a shelf button with this python command:
-
+To run, create a shelf button with this python command:
 ```python
-
 import workflow.renamer.main as wf_renamer
 wf_renamer.load()
-
 ```
 
 ### REFERENCE MINIPANEL
@@ -37,7 +34,19 @@ Provides options for reload, load, unload, select, duplicate, remove any referen
 
 Also has mass replacement from multiples selected references at once, and set their reference namespace from the reference file name.
 
-<center>![renamer screenshot](https://github.com/MaxRocamora/MayaWorkflow/blob/master/workflow/img/refpanel.png?raw=true>)</center>
+![renamer screenshot](https://github.com/MaxRocamora/MayaWorkflow/blob/master/workflow/img/refpanel.png?raw=true>)
+
+To run, create a shelf button with this python command:
+```python
+import workflow.reference_panel.main as wf_refpanel
+wf_refpanel.load()
+```
 
 #### SAVE INCREMENTAL
 A simple script to save incremental your current file even if it is not modified.
+
+To run, create a shelf button with this python command:
+```python
+import workflow.saveinc.main
+save_incremental()
+```
