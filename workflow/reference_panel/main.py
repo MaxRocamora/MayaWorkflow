@@ -9,11 +9,12 @@ import os
 
 from PySide2 import QtGui, QtCore
 import maya.cmds as cmds
+import pymel as pm
 
-from a2core.ui.css.window_styler import WindowsStyler
-import maya_scr.utils.mayaNodeSelector as mayaNodeSelector
-from maya_scr.utils.qt_loader_maya import load_ui, get_maya_main_window
-from maya_scr.workflow.refPanel.version import *
+from workflow.common.window_styler import WindowsStyler
+from workflow.common.qt_loader_maya import load_ui, get_maya_main_window
+import workflow.reference_panel.libs.mayaReferences as MayaRef
+from workflow.reference_panel.version import *
 
 path = os.path.dirname(__file__)
 form, base = load_ui(os.path.join(path, 'ui', 'main_ui.ui'))
@@ -27,16 +28,16 @@ class ReferencePanel(base, form):
         self.setWindowFlags(QtCore.Qt.Tool)
         self.setObjectName(__qt__)
         self.css = WindowsStyler(self, __file__, 'RP')
-        self.mns = mayaNodeSelector.mayaNodeSelector()
-        self.setIcons()
-        self.setConnections()
+        self.set_icons()
+        self.set_connections()
         self.offset = (self.pos())
+        self.maya_references = MayaRef.MayaReference()
 
 # --------------------------------------------------------------------------------------------
 # CONNECTIONS & BUTTONS
 # --------------------------------------------------------------------------------------------
 
-    def setIcons(self):
+    def set_icons(self):
         reloadIcon = QtGui.QIcon(path + '/icons/refresh.png')
         selectIcon = QtGui.QIcon(path + '/icons/select.png')
         loadIcon = QtGui.QIcon(path + '/icons/load.png')
@@ -50,7 +51,7 @@ class ReferencePanel(base, form):
         self.btn_duplicate.setIcon(duplicateIcon)
         self.btn_remove.setIcon(removeIcon)
 
-    def setConnections(self):
+    def set_connections(self):
         ''' Connections UI '''
         self.btn_reload.clicked.connect(self.reloadRef)
         self.btn_select.clicked.connect(self.selectRef)
@@ -66,27 +67,27 @@ class ReferencePanel(base, form):
 # --------------------------------------------------------------------------------------------
 
     def reloadRef(self):
-        for item in self.mns.getReferencesObject(selected=True):
+        for item in self.getReferencesObject(selected=True):
             item.reload()
 
     def unloadRef(self):
-        for item in self.mns.getReferencesObject(selected=True):
+        for item in self.getReferencesObject(selected=True):
             item.unload()
 
     def loadRef(self):
-        for item in self.mns.getReferencesObject(selected=True):
+        for item in self.getReferencesObject(selected=True):
             item.load()
 
     def removeRef(self):
-        for item in self.mns.getReferencesObject(selected=True):
+        for item in self.getReferencesObject(selected=True):
             item.remove()
 
     def duplicateRef(self):
-        for item in self.mns.getReferencesObject(selected=True):
+        for item in self.getReferencesObject(selected=True):
             item.duplicate()
 
     def selectRef(self):
-        for item in self.mns.getReferencesObject(selected=True):
+        for item in self.getReferencesObject(selected=True):
             item.select()
 
 # --------------------------------------------------------------------------------------------
@@ -94,12 +95,12 @@ class ReferencePanel(base, form):
 # --------------------------------------------------------------------------------------------
 
     def restoreRefName(self):
-        for item in self.mns.getReferencesObject(selected=True):
+        for item in self.getReferencesObject(selected=True):
             item.updateNamespace()
 
     def repath(self):
         if self.browseFilePath():
-            for item in self.mns.getReferencesObject(selected=True):
+            for item in self.getReferencesObject(selected=True):
                 item.replaceFile(self.newFile)
 
     def browseFilePath(self):
@@ -112,6 +113,27 @@ class ReferencePanel(base, form):
             return True
         else:
             return False
+
+# --------------------------------------------------------------------------------------------
+# REFERENCES
+# --------------------------------------------------------------------------------------------
+
+    def getReferencesObject(self, selected=False):
+        ''' Get reference object list from selection.
+        Args:
+            selected (boolean) if true get objects from maya selection.
+        Returns:
+            list of reference objects
+        '''
+        if selected:
+            return self.maya_references.getReferences(selected=True)
+        else:
+            # get references from scene (pymel)
+            return pm.core.listReferences(parentReference=None,
+                                          recursive=False,
+                                          namespaces=False,
+                                          refNodes=True,
+                                          references=False)
 
 # --------------------------------------------------------------------------------------------
 # DRAG UI
@@ -128,11 +150,8 @@ class ReferencePanel(base, form):
         self.move(x - x_w, y - y_w)
 
 
-def main():
+def load():
     if cmds.window(__qt__, q=1, ex=1):
         cmds.deleteUI(__qt__)
     app = ReferencePanel()
     app.show()
-
-
-main()  # tools published with reload
