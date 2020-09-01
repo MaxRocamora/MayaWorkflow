@@ -14,7 +14,6 @@ from PySide2.QtCore import Qt
 
 from workflow.common.window_styler import WindowsStyler
 from workflow.common.qt_loader_maya import load_ui, get_maya_main_window
-from workflow.common.palette import dark_palette
 from workflow.renamer.version import *
 
 ui_path = os.path.dirname(__file__)
@@ -40,7 +39,6 @@ class Renamer(base, form):
         self.setWindowFlags(Qt.Tool)
         self.setupUi(self)
         self.setObjectName(__qt__)
-        dark_palette(self)
         self.css = WindowsStyler(self, __file__)
         self.set_connections()
         self.reset_ui()
