@@ -23,13 +23,6 @@ QPushButton:pressed {
     background-color: rgb(60, 60, 60);
 }
 
-QPushButton:hover {
-    color: rgb(230, 230, 230);
-    background-color: rgb(46, 134, 193);
-    border: 1px solid rgb(235, 245, 251);
-}
-
-
 /* **************************************************** */
 /* QWIDGET (tree&list)*/
 /* **************************************************** */
