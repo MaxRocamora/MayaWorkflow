@@ -1,6 +1,6 @@
 <center><h2>Maya Workflow Tools</h2></center>
 
-A small set of workflow tools for maya
+A (very) small set of workflow tools for maya
 
 Tested on:
 Maya 2017/2018/2019
