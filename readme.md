@@ -47,6 +47,6 @@ A simple script to save incremental your current file even if it is not modified
 
 To run, create a shelf button with this python command:
 ```python
-import workflow.saveinc.main
-save_incremental()
+import workflow.saveinc.main as saveinc
+saveinc.save_incremental()
 ```
