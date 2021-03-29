@@ -14,10 +14,10 @@ PYTHONPATH += 'D:\install_directory\Workflow'
 ### 3DSMAX STYLE RENAMER
 A renamer/replace based on the 3dsmax renamer.
 
-This tool support maya undo feature. (Ctrl + Z)
-There are some limitations from the maya naming system, you cannot have a number prefix, or duplicated names in the same hierarchy.
-You can rename maya non-DAG Objects, like shading nodes, etc, from outliner.
-The numbering feature works reading the selection order, if you want identical results on numbering, just select items in the same order. (Ej. select Top item, shift click bottom)
+|This tool support maya undo feature. (Ctrl + Z)
+|There are some limitations from the maya naming system, you cannot have a number prefix, or duplicated names in the same hierarchy.
+|You can rename maya non-DAG Objects, like shading nodes, etc, from the outliner.
+|The auto-numbering feature works reading the selection order, if you want the same results on numbering, just select items in the same order. (Select Top item, shift-click and select bottom item)
 
 ![renamer screenshot](https://github.com/MaxRocamora/MayaWorkflow/blob/master/workflow/img/renamer.png?raw=true>)
 
@@ -32,7 +32,7 @@ Manage reference nodes from scene selection.
 
 Provides options for reload, load, unload, select, duplicate, remove any references from maya by selecting one or more elements of the reference on viewport.
 
-Also has mass replacement from multiples selected references at once, and set their reference namespace from the reference file name.
+Also, in the utility menu, has mass replacement from multiples selected references at once, and set their reference namespace from the reference file name.
 
 ![renamer screenshot](https://github.com/MaxRocamora/MayaWorkflow/blob/master/workflow/img/refpanel.png?raw=true>)
 
