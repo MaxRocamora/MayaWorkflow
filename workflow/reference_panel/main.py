@@ -1,20 +1,21 @@
 # -*- coding: utf-8 -*-
 # --------------------------------------------------------------------------------------------
 # Author: Maximiliano Rocamora
-# Mini Panel for Maya Reference control
+# Maya References Picker from viewport
 # import arcane.workflow.refPanel.main as refp; reload(refp)
 # --------------------------------------------------------------------------------------------
-from __future__ import print_function
 import os
 
 from PySide2 import QtGui, QtCore
+from PySide2.QtWidgets import QApplication
+
 import maya.cmds as cmds
 import pymel as pm
 
-from workflow.common.window_styler import WindowsStyler
 from workflow.common.qt_loader_maya import load_ui, get_maya_main_window
 import workflow.reference_panel.libs.mayaReferences as MayaRef
-from workflow.reference_panel.version import *
+from .version import *
+from . import *
 
 path = os.path.dirname(__file__)
 form, base = load_ui(os.path.join(path, 'ui', 'main_ui.ui'))
@@ -23,102 +24,85 @@ form, base = load_ui(os.path.join(path, 'ui', 'main_ui.ui'))
 class ReferencePanel(base, form):
     def __init__(self, parent=get_maya_main_window()):
         super(ReferencePanel, self).__init__(parent)
-        self.setAttribute(QtCore.Qt.WA_DeleteOnClose, True)
         self.setupUi(self)
-        self.setWindowFlags(QtCore.Qt.Tool)
+        self.setAttribute(QtCore.Qt.WA_DeleteOnClose, True)
+        self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        self.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
         self.setObjectName(__qt__)
-        self.css = WindowsStyler(self, __file__, 'RP')
-        self.set_icons()
-        self.set_connections()
-        self.offset = (self.pos())
+        self.config_ui()
         self.maya_references = MayaRef.MayaReference()
 
-# --------------------------------------------------------------------------------------------
-# CONNECTIONS & BUTTONS
-# --------------------------------------------------------------------------------------------
+        self.move(
+            QApplication.desktop().screen().rect().center() - self.rect().center()
+        )
 
-    def set_icons(self):
-        reloadIcon = QtGui.QIcon(path + '/icons/refresh.png')
-        selectIcon = QtGui.QIcon(path + '/icons/select.png')
-        loadIcon = QtGui.QIcon(path + '/icons/load.png')
-        unloadIcon = QtGui.QIcon(path + '/icons/unload.png')
-        duplicateIcon = QtGui.QIcon(path + '/icons/duplicate.png')
-        removeIcon = QtGui.QIcon(path + '/icons/remove.png')
-        self.btn_reload.setIcon(reloadIcon)
-        self.btn_select.setIcon(selectIcon)
-        self.btn_load.setIcon(loadIcon)
-        self.btn_unload.setIcon(unloadIcon)
-        self.btn_duplicate.setIcon(duplicateIcon)
-        self.btn_remove.setIcon(removeIcon)
+        self.drag_position = 0
+        self.draggin = False
 
-    def set_connections(self):
-        ''' Connections UI '''
-        self.btn_reload.clicked.connect(self.reloadRef)
-        self.btn_select.clicked.connect(self.selectRef)
-        self.btn_load.clicked.connect(self.loadRef)
-        self.btn_unload.clicked.connect(self.unloadRef)
-        self.btn_duplicate.clicked.connect(self.duplicateRef)
-        self.btn_remove.clicked.connect(self.removeRef)
-        self.mnu_replaceFiles.triggered.connect(self.repath)
-        self.mnu_updateReferenceNs.triggered.connect(self.restoreRefName)
+    def config_ui(self):
+        # general css
+        self.top_frame.setStyleSheet("""
+            QFrame {
+                    background-color: rgba(35, 35, 35, 255);
+            }
+            """)
+        self.lbl_title.setAttribute(QtCore.Qt.WA_TransparentForMouseEvents)
+        self.ui_frame.setStyleSheet("""
+            QFrame {
+                    background-color: rgba(50, 50, 50, 255);
+            }
+            """)
 
-# --------------------------------------------------------------------------------------------
-# QUICK BUTTONS ACTIONS
-# --------------------------------------------------------------------------------------------
+        self.btn_select.setStyleSheet(css_select)
+        self.btn_reload.setStyleSheet(css_reload)
+        self.btn_load.setStyleSheet(css_load)
+        self.btn_unload.setStyleSheet(css_unload)
+        self.btn_remove.setStyleSheet(css_remove)
+        self.btn_duplicate.setStyleSheet(css_duplicate)
+        self.btn_filepath.setStyleSheet(css_replace)
+        self.btn_namespace.setStyleSheet(css_namespace)
 
-    def reloadRef(self):
-        for item in self.getReferencesObject(selected=True):
-            item.reload()
+        # icons
+        self.btn_close.setIcon(QtGui.QIcon(path + '/icons/close.png'))
 
-    def unloadRef(self):
-        for item in self.getReferencesObject(selected=True):
-            item.unload()
+        # connections
+        self.btn_close.clicked.connect(lambda: self.close())
+        self.btn_select.clicked.connect(lambda: self.ref_callback('select'))
+        self.btn_reload.clicked.connect(lambda: self.ref_callback('reload'))
+        self.btn_load.clicked.connect(lambda: self.ref_callback('load'))
+        self.btn_unload.clicked.connect(lambda: self.ref_callback('unload'))
+        self.btn_duplicate.clicked.connect(lambda: self.ref_callback('duplicate'))
+        self.btn_remove.clicked.connect(lambda: self.ref_callback('remove'))
+        self.btn_namespace.clicked.connect(lambda: self.ref_callback('auto_update_namespace'))
+        self.btn_filepath.clicked.connect(self.repath)
 
-    def loadRef(self):
-        for item in self.getReferencesObject(selected=True):
-            item.load()
+    # --------------------------------------------------------------------------------------------
+    # BUTTONS ACTIONS
+    # --------------------------------------------------------------------------------------------
 
-    def removeRef(self):
-        for item in self.getReferencesObject(selected=True):
-            item.remove()
-
-    def duplicateRef(self):
-        for item in self.getReferencesObject(selected=True):
-            item.duplicate()
-
-    def selectRef(self):
-        for item in self.getReferencesObject(selected=True):
-            item.select()
-
-# --------------------------------------------------------------------------------------------
-# MENU BAR ACTIONS
-# --------------------------------------------------------------------------------------------
-
-    def restoreRefName(self):
-        for item in self.getReferencesObject(selected=True):
-            item.updateNamespace()
+    def ref_callback(self, action):
+        for item in self.selected_ui_references(selected=True):
+            method = getattr(item, action)
+            method()
 
     def repath(self):
-        if self.browseFilePath():
-            for item in self.getReferencesObject(selected=True):
-                item.replaceFile(self.newFile)
+        new_file = self.browse_file()
+        if new_file:
+            for item in self.selected_ui_references(selected=True):
+                item.replace_file_for(new_file)
 
-    def browseFilePath(self):
-        ''' Open folder for file search '''
-        userPath = cmds.fileDialog2(dialogStyle=1, fm=1)
-        if userPath:
-            self.newFile = userPath[0]
-            if "\\" in self.newFile:
-                self.newFile = self.newFile.replace("\\", "/")
-            return True
-        else:
-            return False
+    def browse_file(self):
+        ''' Open folder for file search, returns selected file '''
+        file_selected = cmds.fileDialog2(dialogStyle=1, fm=1)
+        if file_selected:
+            return file_selected[0].replace(os.sep, "/")
+        return False
 
-# --------------------------------------------------------------------------------------------
-# REFERENCES
-# --------------------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------------------------
+    # REFERENCE OBJECTS
+    # --------------------------------------------------------------------------------------------
 
-    def getReferencesObject(self, selected=False):
+    def selected_ui_references(self, selected=False):
         ''' Get reference object list from selection.
         Args:
             selected (boolean) if true get objects from maya selection.
@@ -135,19 +119,22 @@ class ReferencePanel(base, form):
                                           refNodes=True,
                                           references=False)
 
-# --------------------------------------------------------------------------------------------
-# DRAG UI
-# --------------------------------------------------------------------------------------------
-
-    def mousePressEvent(self, event):
-        self.offset = event.pos()
+    # --------------------------------------------------------------------------------------------
+    # DRAG UI
+    # --------------------------------------------------------------------------------------------
 
     def mouseMoveEvent(self, event):
-        x = event.globalX()
-        y = event.globalY()
-        x_w = self.offset.x()
-        y_w = self.offset.y()
-        self.move(x - x_w, y - y_w)
+        if event.buttons() == QtCore.Qt.LeftButton and self.draggin:
+            self.move(self.pos() + event.globalPos() - self.drag_position)
+            self.drag_position = event.globalPos()
+            event.accept()
+
+    def mouseReleaseEvent(self, event):
+        self.draggin = False
+
+    def mousePressEvent(self, event):
+        self.draggin = True
+        self.drag_position = event.globalPos()
 
 
 def load():
