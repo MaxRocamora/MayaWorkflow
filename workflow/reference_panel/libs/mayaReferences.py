@@ -1,19 +1,8 @@
 # -*- coding: utf-8 -*-
 # --------------------------------------------------------------------------------------------
 # This Class handles references control in a maya scene
-# You must create an object for each reference to use.
-'''
-import mayaReferences
-
-refInSelection = []
-sel = cmds.ls(sl=True)
-for item in sel:
-    thisRef = cmds.referenceQuery(item, rfn=True)
-    if thisRef not in refInSelection:
-        refInSelection.append(thisRef)
-
-return [mayaReferences.mayaReference("none", r) for r in refInSelection]
-'''
+# You must create an object for each reference to use, use getReferences
+# staticmethod to collect selected references as objects
 # --------------------------------------------------------------------------------------------
 
 import re
@@ -28,24 +17,21 @@ class MayaReference():
     def __init__(self, _node=None):
         self._node = _node
 
-    def __str__(self):
-        return "Maya Single Reference Object Class"
-
     @staticmethod
     def getReferences(selected=False):
-        ''' Returs list of maya references from
+        ''' returns a list of maya references from
         scene selection in form of objects '''
-        refInSelection = []
+        selected_references = []
         if selected:
             sel = cmds.ls(sl=True)
         else:
             sel = cmds.ls(type="reference")
         for item in sel:
-            thisRef = cmds.referenceQuery(item, rfn=True)
-            if thisRef not in refInSelection:
-                refInSelection.append(thisRef)
+            ref_node = cmds.referenceQuery(item, rfn=True)
+            if ref_node not in selected_references:
+                selected_references.append(ref_node)
 
-        return [MayaReference(r) for r in refInSelection]
+        return [MayaReference(r) for r in selected_references]
 
 # --------------------------------------------------------------------------------------------
 # PROPERTIES
@@ -67,7 +53,7 @@ class MayaReference():
         return cmds.referenceQuery(str(self.node), namespace=True)
 
     @property
-    def namespaceNumber(self):
+    def namespace_number(tail_self):
         ''' Returns namespace ending numbers of this reference '''
         ns = self.namespace.split(":")[1]
         number = re.findall('\d+', ns)
@@ -77,20 +63,20 @@ class MayaReference():
             return ''
 
     @property
-    def mayaNodes(self):
+    def maya_nodes(self):
         ''' Returns the maya nodes inside of this reference '''
         return cmds.referenceQuery(self.name, nodes=True)
 
     @property
-    def rFile(self):
+    def ref_filepath(self):
         '''return the filepath of the reference file'''
         return cmds.referenceQuery(self.name, f=True)
 
     @property
-    def rFileId(self):
+    def ref_filepath_id(self):
         '''return numer id of the filepath for
         files referenced multiple times'''
-        return self.rFile.split('.ma')[1]
+        return self.ref_filepath.split('.ma')[1]
 
 # --------------------------------------------------------------------------------------------
 # METHODS
@@ -98,11 +84,11 @@ class MayaReference():
 
     def select(self):
         ''' Select the nodes of this reference '''
-        cmds.select(self.mayaNodes, r=True)
+        cmds.select(self.maya_nodes, r=True)
 
     def reload(self):
         '''reload reference'''
-        cmds.file(self.rFile, loadReference=self.name)
+        cmds.file(self.ref_filepath, loadReference=self.name)
 
     def unload(self):
         ''' Unloads this reference '''
@@ -118,7 +104,7 @@ class MayaReference():
 
     def duplicate(self):
         ''' Duplicate this reference '''
-        items = self.mayaNodes
+        items = self.maya_nodes
         if items is not None:
             cmds.select(items[0], r=True)
             try:
@@ -127,15 +113,15 @@ class MayaReference():
                 # print "Something fail at duplicating this reference"
                 pass
 
-    def replaceFile(self, newFile):
+    def replace_file_for(self, new_filename):
         ''' Replaces the file of a reference '''
-        cmds.file(newFile, loadReference=self.node)
+        cmds.file(new_filename, loadReference=self.node)
 
-    def updateNamespace(self):
-        ''' Set namespace to match reference file name and preserves id '''
-        oldNs = self.namespace.split(":")[1]
-        path, filename = os.path.split(self.rFile)
+    def auto_update_namespace(self):
+        ''' set namespace to match reference file name and preserves id '''
+        old_namespace = self.namespace.split(":")[1]
+        path, filename = os.path.split(self.ref_filepath)
         filename, file_extension = os.path.splitext(filename)
-        newName = filename + '_' + self.namespaceNumber
-        if not cmds.namespace(exists=newName):
-            cmds.namespace(rename=(oldNs, newName))
+        new_name = filename + '_' + self.namespace_tail_number
+        if not cmds.namespace(exists=new_name):
+            cmds.namespace(rename=(old_namespace, new_name))
