@@ -1,25 +1,6 @@
-# -*- coding: utf-8 -*-
-# --------------------------------------------------------------------------------------------
-#
-# MAYA MESH CORE METHODS
-# Imported as: mayaMeshCore
-# Class Name Instance: mmc
-# This Class handles operations on meshes
-#
-# delete history
-# freeze transformations
-# centerPivot
-# clean Combine
-# clean Separate
-# clean duplicate
-# copy Pivot
-# restore shapes names
-# mutate geo (not working)
-#
-# --------------------------------------------------------------------------------------------
 
 import maya.cmds as cmds
-import random
+# copiar el metodo aca
 import maya_scr.utils.mayaNodeSelector as mayaNodeSelector
 
 
