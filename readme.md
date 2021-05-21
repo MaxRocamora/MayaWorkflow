@@ -41,6 +41,15 @@ import workflow.reference_panel.main as wf_refpanel
 wf_refpanel.load()
 ```
 
+### TD ACTIONS
+Some usefull scripts packed into a simple ui
+
+To run, create a shelf button with this python command:
+```python
+import workflow.tdactions.main as tdactions
+tdactions.save_incremental()
+```
+
 #### SAVE INCREMENTAL
 A simple script to save incremental your current file even if it is not modified.
 
