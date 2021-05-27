@@ -13,7 +13,7 @@ import re
 # --------------------------------------------------------------------------------------------
 
 
-def remove_unknown_plugins():
+def SCENE_remove_unknown_plugins():
     ''' removes missing plugins from ma file '''
     if cmds.unknownPlugin(query=1, list=1):
         for plug in cmds.unknownPlugin(query=1, list=1):
@@ -24,7 +24,7 @@ def remove_unknown_plugins():
     return 'Unknown Plugins removed', 1
 
 
-def unlock_orthographic_cameras():
+def SCENE_unlock_orthographic_cameras():
     ''' unlock orthographic camera so it can be deleted '''
     sel = cmds.ls(sl=True)
     if not len(sel):
@@ -39,7 +39,7 @@ def unlock_orthographic_cameras():
     return ("Selected orthographic cameras can be deleted now."), 1
 
 
-def restore_render_UI():
+def SCENE_restore_render_UI():
     ''' removes and restore render ui window '''
     try:
         mel.eval("deleteUI unifiedRenderGlobalsWindow")
@@ -49,7 +49,7 @@ def restore_render_UI():
         return str(e), 0
 
 
-def kill_turtle_plugin():
+def SCENE_kill_turtle_plugin():
     ''' removes turtle maya plugin from scene '''
     import pymel.core as pm
     try:
@@ -81,7 +81,7 @@ def kill_turtle_plugin():
     return msg, status
 
 
-def cleanup_DCF_updateViewportList():
+def SCENE_cleanup_DCF_updateViewportList():
     ''' removes from uiConfigurationScriptNode and scene the nasty
     bug message from DCF_updateViewportList '''
     msg, status = 'DCF_updateViewportList ScriptNode Not Found', 0
@@ -98,7 +98,7 @@ def cleanup_DCF_updateViewportList():
 # --------------------------------------------------------------------------------------------
 
 
-def unlock_basic_channels():
+def MESH_unlock_basic_channels():
     ''' unlocks and restore channels '''
     basic_attributes = ['.tx', '.ty', '.tz',
                         '.rx', '.ry', '.rz',
@@ -125,7 +125,7 @@ def unlock_basic_channels():
     return msg, 1
 
 
-def unlock_all_channels():
+def MESH_unlock_all_channels():
     ''' unlocks and restore all maya channels '''
     sel = cmds.ls(sl=True)
     mesh = cmds.listRelatives(sel, pa=True, type="mesh")
@@ -145,7 +145,7 @@ def unlock_all_channels():
     return msg, 1
 
 
-def delete_custom_attributes():
+def MESH_delete_custom_attributes():
     ''' delete all custom attributes '''
     rawSel = cmds.ls(sl=True)  # raw selection
     rawMesh = cmds.listRelatives(
@@ -186,7 +186,7 @@ def delete_custom_attributes():
 # --------------------------------------------------------------------------------------------
 
 
-def freeze_transformations():
+def GEO_freeze_transformations():
     ''' freezes transformations of selection  '''
     sel = cmds.ls(sl=True)
     if cmds.nodeType(sel) == "mesh":
@@ -201,7 +201,7 @@ def freeze_transformations():
         len(all_sel)), 1
 
 
-def center_pivot():
+def MESH_center_pivot():
     ''' reset pivot of transforms meshes '''
     sel = cmds.ls(sl=True)
     if sel is None:
@@ -212,7 +212,7 @@ def center_pivot():
     return "Pivot Centered on ({}) transform nodes".format(len(sel))
 
 
-def clear_combine_selection():
+def GEO_clear_combine_selection():
     ''' combines selection and deletes history '''
     sel = cmds.ls(sl=True)
     meshes = cmds.listRelatives(sel, pa=True, type="mesh")
@@ -226,7 +226,7 @@ def clear_combine_selection():
     return "Shapes combined with no history: ({})".format(len(all_sel)), 1
 
 
-def cleans_separate():
+def GEO_clean_separate():
     ''' Separates selection and deletes history '''
     sel = cmds.ls(sl=True)
     mesh = cmds.listRelatives(sel, pa=True, type="mesh")
@@ -241,7 +241,7 @@ def cleans_separate():
         return str(e), 0
 
 
-def copy_pivot():
+def GEO_copy_pivot():
     ''' Copy the pivot from source mesh to others objects. '''
     if len(cmds.ls(sl=True)) < 2:
         return "Select 2 or more objects.", 0
@@ -267,7 +267,7 @@ def copy_pivot():
     return "Pivot Copied", 1
 
 
-def restore_shapes_names():
+def MESH_restore_shapes_names():
     ''' resets shape names for selection '''
     sel = cmds.ls(sl=True, type="mesh", dag=True, noIntermediate=True)
     meshes = cmds.listRelatives(sel, parent=True, fullPath=1, path=True)
